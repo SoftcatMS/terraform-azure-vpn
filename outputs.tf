@@ -1,9 +1,14 @@
-output "gateway_id" {
-  description = "The ID of the virtual network gateway."
-  value       = azurerm_virtual_network_gateway.gw.id
+output "vpn_gateway_id" {
+  description = "The resource ID of the virtual network gateway"
+  value       = azurerm_virtual_network_gateway.vpngw.id
 }
 
-output "fqdns" {
-  description = "List of the fqdn for gateway. Will return 2 for active_active mode and 1 otherwise"
-  value       = flatten([[azurerm_public_ip.gw.fqdn], var.active_active ? [azurerm_public_ip.gw_aa[0].fqdn] : []])
+output "vpn_gateway_public_ip" {
+  description = "The public IP of the virtual network gateway"
+  value       = flatten(concat([azurerm_public_ip.pip_gw.ip_address], [var.enable_active_active != null ? azurerm_public_ip.pip_aa.*.ip_address : null]))
+}
+
+output "vpn_gateway_public_ip_fqdn" {
+  description = "Fully qualified domain name of the virtual network gateway"
+  value       = flatten(concat([azurerm_public_ip.pip_gw.fqdn], [var.enable_active_active != null ? azurerm_public_ip.pip_aa.*.fqdn : null]))
 }
